@@ -1,55 +1,59 @@
-#include "tinygl.h"
+
+#include "system.h"
 #include "player.h"
+#include "screen.h"
 
-player_t player_init(void)
-{
-	player_t player = {0, {TINYGL_WIDTH / 2, TINYGL_HEIGHT - 1}};
-	return player;
-}
 
-player_t move_left(player_t player)
-{
-	if (player.pos.x == 0) {
-		return player;
-	} else {
-	tinygl_draw_point(player.pos, 0);
-	player.pos.x= player.pos.x-1;
-	tinygl_draw_point(player.pos, 1);
-	return player;
-	}
-}
-player_t move_right(player_t player)
-{
-	if (player.pos.x == 4) {
-		return player;
-	} else {
-	tinygl_draw_point(player.pos, 0);
-	player.pos.x= player.pos.x+1;
-	tinygl_draw_point(player.pos, 1);
-	return player;
-	}
-	
-}
+
 player_t move_forward(player_t player)
 {
-	if (player.pos.y == 0) {
+	if (player.y == 0 || screen_pixel_get(player.y - 1, player.x)) {
 		return player;
+	} else if (player.y <= 3) {
+		screen_up();
+		player.score += 1;
 	} else {
-	tinygl_draw_point(player.pos, 0);
-	player.pos.y= player.pos.y - 1;
-	tinygl_draw_point(player.pos, 1);
-	return player;
+		player.y= player.y-1;
 	}
-	
+	return player;
 }
 player_t move_backward(player_t player)
 {
-	if (player.pos.y == 6) {
+	if (player.y == 4 || screen_pixel_get(player.y + 1, player.x)) {
 		return player;
 	} else {
-	tinygl_draw_point(player.pos, 0);
-	player.pos.y= player.pos.y + 1;
-	tinygl_draw_point(player.pos, 1);
+	player.y= player.y+1;
 	return player;
 	}
+	
+}
+player_t move_right(player_t player)
+{
+	if (player.x == 0 || screen_pixel_get(player.y, player.x - 1)) {
+		return player;
+	} else {
+	player.x= player.x - 1;
+	return player;
+	}
+	
+}
+player_t move_left(player_t player)
+{
+	if (player.x == 6 || screen_pixel_get(player.y, player.x + 1)) {
+		return player;
+	} else {
+	player.x= player.x + 1;
+	return player;
+	}
+}
+
+player_t player_init(void)
+{
+	player_t player = {0, 4, 4};
+	return player;
+}
+
+
+void player_update(player_t player) {
+	show_column(BIT(player.x), player.y);
 }
