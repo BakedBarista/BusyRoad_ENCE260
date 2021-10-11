@@ -16,10 +16,13 @@ all: game.out
 
 
 # Compile: create object files from C source files.
-game.o: game.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/navswitch.h ../../utils/pacer.h ../../utils/tinygl.h p_move.h
+game.o: game.c ../../drivers/avr/system.h ../../drivers/display.h ../../drivers/navswitch.h ../../utils/pacer.h ../../utils/task.h ../../utils/tinygl.h player.h screen.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
-p_move.o: p_move.c p_move.h
+player.o: player.c player.h
+	$(CC) -c $(CFLAGS) $< -o $@
+	
+screen.o: screen.c screen.h
 	$(CC) -c $(CFLAGS) $< -o $@
 	
 pio.o: ../../drivers/avr/pio.c ../../drivers/avr/pio.h ../../drivers/avr/system.h
@@ -39,6 +42,9 @@ pacer.o: ../../utils/pacer.c ../../drivers/avr/system.h ../../drivers/avr/timer.
 	
 tinygl.o: ../../utils/tinygl.c ../../drivers/avr/system.h ../../drivers/display.h ../../utils/font.h ../../utils/tinygl.h
 	$(CC) -c $(CFLAGS) $< -o $@
+	
+task.o: ../../utils/task.c ../../drivers/avr/system.h ../../drivers/avr/timer.h ../../utils/task.h
+	$(CC) -c $(CFLAGS) $< -o $@
 
 font.o: ../../utils/font.c ../../drivers/avr/system.h ../../utils/font.h
 	$(CC) -c $(CFLAGS) $< -o $@
@@ -52,7 +58,7 @@ system.o: ../../drivers/avr/system.c ../../drivers/avr/system.h
 
 
 # Link: create ELF output file from object files.
-game.out: game.o system.o p_move.o pio.o display.o ledmat.o navswitch.o pacer.o tinygl.o timer.o font.o
+game.out: game.o system.o player.o screen.o pio.o display.o ledmat.o navswitch.o pacer.o task.o tinygl.o timer.o font.o
 	$(CC) $(CFLAGS) $^ -o $@ -lm
 	$(SIZE) $@
 
@@ -68,5 +74,4 @@ clean:
 program: game.out
 	$(OBJCOPY) -O ihex game.out game.hex
 	dfu-programmer atmega32u2 erase; dfu-programmer atmega32u2 flash game.hex; dfu-programmer atmega32u2 start
-
 
