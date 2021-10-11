@@ -1,10 +1,12 @@
 #include "tinygl.h"
 #include "screen.h"
 #include "pio.h"
+#include <stdlib.h>
 
 static uint8_t bitmap[SCREEN_WIDTH];
 static uint8_t preload[SCREEN_MAX_PRELOAD] = {0};
 static uint8_t preloaded_columns = 0;
+static uint8_t screen_counter[6] = {0,1,2,3,2,1};
 
 /** Define PIO pins driving LED matrix rows.  */
 static const pio_t rows[] =
@@ -45,8 +47,20 @@ static void screen_preload(void)
         for (int col = SCREEN_MAX_PRELOAD; col > 1; col--) {
             preload[col-1] = preload[col-2];
         }
-        // Placeholder lines
-        preload[0] = 0x00;
+        // Randomly generate obsticles and empty rows for traffic
+        uint8_t empty_row = screen_counter[rand() % 5];
+        if (empty_row == 0) {
+        	for (int i = 0; i < SCREEN_MAX_PRELOAD; i++) {
+        			preload[i] = (rand() % 0x7f);
+        	}
+        } else {
+        	for (int j = 0; j < empty_row; j++) {
+        		for (int i = 0; i < SCREEN_MAX_PRELOAD; i++) {
+        			preload[i] = 0x00;
+        		}
+        	}
+        }
+        	
         preloaded_columns++;
     }
 }
