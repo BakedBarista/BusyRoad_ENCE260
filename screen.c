@@ -6,7 +6,7 @@
 static uint8_t bitmap[SCREEN_WIDTH];
 static uint8_t preload[SCREEN_MAX_PRELOAD] = {0};
 static uint8_t preloaded_columns = 0;
-static uint8_t screen_counter[6] = {0,1,2,3,2,1};
+static uint8_t screen_counter[10] = {0,1,2,2,2,1,1,1,2,2};
 
 /** Define PIO pins driving LED matrix rows.  */
 static const pio_t rows[] =
@@ -47,11 +47,14 @@ static void screen_preload(void)
         for (int col = SCREEN_MAX_PRELOAD; col > 1; col--) {
             preload[col-1] = preload[col-2];
         }
-        // Randomly generate obsticles and empty rows for traffic
-        uint8_t empty_row = screen_counter[rand() % 5];
+        // Randomly generate obstacles and empty rows for traffic
+        uint8_t empty_row = screen_counter[rand() % 10];
         if (empty_row == 0) {
         	for (int i = 0; i < SCREEN_MAX_PRELOAD; i++) {
-        			preload[i] = (rand() % 0x7f);
+        			preload[i/2] = (rand() % 0x7f);
+        			while (preload[i] == 0x7f) {
+        				preload[i] = (rand() % 0x7f);
+        				}
         	}
         } else {
         	for (int j = 0; j < empty_row; j++) {
