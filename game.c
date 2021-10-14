@@ -47,7 +47,7 @@ int main (void)
 	navswitch_init();
 	pacer_init(200);
 	tinygl_init(200);
-	screen_init();
+	screen_init(SCREEN_TASK_RATE);
 	player.x = 4;
 	player.y = 4;
 
