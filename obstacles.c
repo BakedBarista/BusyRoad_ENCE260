@@ -4,7 +4,7 @@
 #include "screen.h"
 #include "obstacles.h"
 
-static uint8_t screen_counter[5] = {0, 0, 2, 3, 2, 1};
+static uint8_t screen_counter[6] = {0, 0, 2, 3, 2, 1};
 static uint8_t car_presets[] = {0x11, 0x54, 0x10, 0x14, 0x02, 0x08};
 static uint8_t car_times[SCREEN_WIDTH] = {0};
 static uint8_t car_placements;
