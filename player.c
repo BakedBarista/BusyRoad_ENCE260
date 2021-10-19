@@ -2,6 +2,11 @@
 #include "system.h"
 #include "player.h"
 #include "screen.h"
+#include <stdlib.h>
+#include <string.h>
+#include "../fonts/font5x7_1.h"
+#include "pacer.h"
+#include "tinygl.h"
 
 
 
@@ -47,6 +52,22 @@ player_t move_left(player_t player)
 	}
 }
 
+//Display game over message with player score
+static void game_over_show(player_t player)
+{
+	
+	uint8_t num = player.score;
+	char str[5];
+	itoa(num, str, 10);
+	char msg[] = "GAME OVER SCORE ";
+	strcat(msg, str);
+	tinygl_text(msg);
+	while(1) {
+		pacer_wait();
+		tinygl_update();
+	}
+}
+
 player_t player_init(void)
 {
 	player_t player = {0, 4, 4};
@@ -54,6 +75,11 @@ player_t player_init(void)
 }
 
 
+
 void player_update(player_t player) {
-	show_column(BIT(player.x), player.y);
+	if (!screen_pixel_get(player.y, player.x)) {
+		show_column(BIT(player.x), player.y);
+	} else {
+		game_over_show(player);
+	}
 }

@@ -71,7 +71,7 @@ int main (void)
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
 	screen_init(SCREEN_TASK_RATE);
 	player = player_init();
-	
+	while (!screen_pixel_get(player.y, player.x)) {
 	task_t tasks[] =
     {
         {.func = screen_task, .period = TASK_RATE / SCREEN_TASK_RATE}, 
@@ -80,7 +80,7 @@ int main (void)
     };
     
 	task_schedule (tasks, ARRAY_SIZE (tasks));
-	
+	}
 	game_over_show(player);
 		
 	return 0;
