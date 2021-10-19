@@ -75,7 +75,7 @@ player_t player_init(void)
 }
 
 
-
+//Displays player and check for collision
 void player_update(player_t player) {
 	if (!screen_pixel_get(player.y, player.x)) {
 		show_column(BIT(player.x), player.y);
