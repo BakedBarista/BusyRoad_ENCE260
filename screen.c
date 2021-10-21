@@ -3,8 +3,17 @@
 #include "obstacles.h"
 #include "pio.h"
 #include <stdlib.h>
+#include <string.h>
+#include <stdbool.h>
+#include "../fonts/font3x5_1.h"
+#include "tinygl.h"
+
 
 static uint8_t bitmap[SCREEN_WIDTH];
+static screen_mode_t screen_mode;
+static uint16_t screen_rate;
+static uint16_t screen_timer = 0;
+static uint16_t screen_score = 0;
 
 /** Define PIO pins driving LED matrix rows.  */
 static const pio_t rows[] =
@@ -22,33 +31,45 @@ static const pio_t cols[] =
 };
 
 // Lits given column with given pattern
-void show_column(uint8_t row_pattern, uint8_t current_column)
+void screen_show_column(uint8_t row_pattern, uint8_t current_column)
 {
-    static uint8_t last_column = 0;
-    pio_output_high(cols[last_column]);
-    for (int i = 0; i < 7; i++) {
-        if ((row_pattern>>i) & 1) {
-            pio_output_low(rows[i]);
+    if (screen_mode == SCREEN_MODE_GAME){
+        static uint8_t last_column = 0;
+        pio_output_high(cols[last_column]);
+        for (int i = 0; i < 7; i++) {
+            if ((row_pattern>>i) & 1) {
+                pio_output_low(rows[i]);
+            }
+            else {
+                pio_output_high(rows[i]);
+            }
         }
-        else {
-            pio_output_high(rows[i]);
-        }
+        pio_output_low(cols[current_column]);
+        last_column = current_column;
     }
-    pio_output_low(cols[current_column]);
-    last_column = current_column;
 }
 
 // Displays the screen
 void screen_update(void)
 {
-    static uint8_t col = 0;
+    if (screen_mode == SCREEN_MODE_GAME){
+        static uint8_t col = 0;
 
-    show_column(bitmap[col], col);
-    col++;
-    if (col >= SCREEN_WIDTH)
-        col = 0;
-        
-    obstacle_update(bitmap);
+        screen_show_column(bitmap[col], col);
+        col++;
+        screen_timer++;
+        if (col >= SCREEN_WIDTH)
+            col = 0;
+        if (screen_timer/screen_rate >= SCREEN_TIME_OUT) {
+            screen_show_game_over();
+        }
+        obstacle_update(bitmap);
+    } else {
+        tinygl_update();
+        if (screen_timer/screen_rate <= 2) {
+            screen_timer += 1;
+        }
+    }
 }
 
 // Returns true/false if given pixel is lit
@@ -67,15 +88,32 @@ bool screen_pixel_get(uint8_t col, uint8_t row)
 // Moves screen up
 void screen_up(void)
 {
-    for (int i = 1; i < SCREEN_WIDTH; i++) {
-        bitmap[SCREEN_WIDTH - i] = bitmap[SCREEN_WIDTH - i - 1];
+    if (screen_mode == SCREEN_MODE_GAME) {
+        for (int i = 1; i < SCREEN_WIDTH; i++) {
+            bitmap[SCREEN_WIDTH - i] = bitmap[SCREEN_WIDTH - i - 1];
+        }
+        screen_score++;
+        screen_timer = 0;
+        // Creates a new obstacle
+        create_obstacle(bitmap);
     }
-    // Creates a new obstacle
-    create_obstacle(bitmap);
 }
 
-// Initialises screen/display
-void screen_init(uint8_t rate)
+//Display game over message with player score
+void screen_show_game_over()
+{
+    if (screen_mode == SCREEN_MODE_GAME) {
+        char str[6];
+        itoa(screen_score, str, 10);
+        char msg[24] = "GAME OVER SCORE:";
+        strcat(msg, str);
+        tinygl_text (msg);
+        screen_timer = 0;
+        screen_mode = SCREEN_MODE_END;
+    }
+}
+
+static void screen_refresh(void)
 {
     for (int i = 0; i < 7; i++) {
         pio_config_set(rows[i], PIO_OUTPUT_HIGH);
@@ -91,7 +129,42 @@ void screen_init(uint8_t rate)
     for (int col = 0; col < SCREEN_WIDTH; col++) {
         bitmap[col] = init[col];
     }
+
+    obstacle_refresh();
+
+    screen_score = 0;
+    screen_timer = 0;
+}
+
+void screen_navswitch_pressed(void)
+{
+    if (screen_mode == SCREEN_MODE_TITLE) {
+        tinygl_text ("USE NAVSTICK TO MOVE");
+        screen_mode = SCREEN_MODE_INSTRUCTIONS;
+    } else if (screen_mode == SCREEN_MODE_INSTRUCTIONS) {
+        screen_refresh();
+        screen_mode = SCREEN_MODE_GAME;
+    }
+    if (screen_mode == SCREEN_MODE_END && (screen_timer/screen_rate >= 2)) {
+        screen_refresh();
+        screen_mode = SCREEN_MODE_GAME;
+    }
+}
+
+// Initialises screen/display
+void screen_init(uint16_t rate)
+{
+	tinygl_init(rate);
+	tinygl_font_set (&font3x5_1);
+    tinygl_text_speed_set (30);
+    tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
+    tinygl_text_dir_set(TINYGL_TEXT_DIR_ROTATE);
+    tinygl_text ("BUSY ROAD");
+    screen_refresh();
     obstacle_init(rate);
+
+    screen_rate = rate;
+    screen_mode = SCREEN_MODE_TITLE;
 }
 
 
