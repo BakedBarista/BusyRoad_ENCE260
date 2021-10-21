@@ -1,8 +1,40 @@
+/** @file    screen.h
+    @authors Carl Chen and Jeremy Gatdula
+    @date    22 October 2021
+    @brief   Screen graphics module.
+
+    @defgroup screen Screen graphics module.
+       
+    This module provides a simple way to display
+    obstacles onto the screen and count scores.
+
+    Here is a example to display obstacles on screen
+
+       @code
+       #include "screen.h"
+       #include "pacer.h"
+
+       void main (void)
+       {
+           pacer_init (300);
+           screen_init(300);
+           while (1)
+           {
+               pacer_wait ();
+               screen_update();
+
+           }
+        }
+       @endcode
+
+*/
+
 #ifndef SCREEN_H
 #define SCREEN_H
 
 #include "system.h"
 
+/** Define size of display.  */
 #define SCREEN_WIDTH 5
 #define SCREEN_HEIGHT 7
 
@@ -22,20 +54,38 @@ typedef enum
 } screen_mode_t;
 
 
-// Lits given column with given pattern
+/** Displays a given pattern on screen
+    @param row_pattern pattern of leds, 1 turns led on, 0 turns led off.
+    @param current_column coordinate of pattern on column.  */
 void screen_show_column(uint8_t row_pattern, uint8_t current_column);
-// Displays the screen
+
+
+/** Update display, obstacles and text display.  */
 void screen_update(void);
-// Returns true/false if given pixel is lit
+
+
+/** Get pixel.
+    @param col column-coordinate on bitmap.
+    @param row row-coordinate on bitmap.
+    @return 1 if pixel is on; 0 if pixel is off.  */
 bool screen_pixel_get(uint8_t col, uint8_t row);
-// Moves screen up
+
+
+/** Advance bitmap up and create new obstacle. */
 void screen_up(void);
-// Unpauses the screen
-void screen_navswitch_pressed(void);
-//Display game over message with player score
+
+
+/** Display game over message with player score. */
 void screen_show_game_over(void);
-// Initialises screen/display
+
+
+/** Advances the screen to the next mode. */
+void screen_navswitch_pressed(void);
+
+
+/** Initialises screen. */
 void screen_init(uint16_t rate);
+
 
 #endif //SCREEN_H
 
