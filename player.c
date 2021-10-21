@@ -20,7 +20,7 @@ player_t move_forward(player_t player)
 	} else if (player.y <= 3) {
 		screen_up();
 	} else {
-		player.y= player.y-1;
+		player.y = player.y-1;
 	}
 	return player;
 }
@@ -34,7 +34,7 @@ player_t move_backward(player_t player)
 	if (player.y == 4 || screen_pixel_get(player.y + 1, player.x)) {
 		return player;
 	} else {
-	player.y= player.y+1;
+	player.y = player.y+1;
 	return player;
 	}
 	
@@ -49,7 +49,7 @@ player_t move_right(player_t player)
 	if (player.x == 0 || screen_pixel_get(player.y, player.x - 1)) {
 		return player;
 	} else {
-	player.x= player.x - 1;
+	player.x = player.x - 1;
 	return player;
 	}
 	
@@ -64,7 +64,7 @@ player_t move_left(player_t player)
 	if (player.x == 6 || screen_pixel_get(player.y, player.x + 1)) {
 		return player;
 	} else {
-	player.x= player.x + 1;
+	player.x = player.x + 1;
 	return player;
 	}
 }
