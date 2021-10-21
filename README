@@ -1,0 +1,16 @@
+***Busy Road***
+Created by Jeremy Gatdula & Carl Chen
+Version 1.0
+
+Description:
+
+A simple action game that requires player to move as far as possible in game. Player needs to move around stationary obstacles and avoid moving obstacles to stay alive. Score is determined by the distance of the player in game when game finishes. 
+
+Instructions:
+
+1. To start game, move the navswitch to any direction.
+2. Player is defined as a flashing pixel, use navswitch to move around.
+3. There are moving obstacles(cars) displayed on the screen. When player is run over by a car, the game is over. 
+4. If the player stays at the same place without moving for a while, the game will time out and end current game.
+5. When game is over, player score will be displayed on the screen after game over message.
+6. To restart game, move the navswitch again.
