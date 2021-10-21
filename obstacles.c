@@ -16,7 +16,7 @@ static bool check_obstacle(uint8_t* bitmap, uint8_t check)
     for (uint8_t i = 1; i < SCREEN_WIDTH; i++) {
         if (check >= 0x7f) {
             return true;
-        } else if (bitmap[i] == 0 || (car_placements & (BIT(i) || BIT(i+8))) != 0 || check == 0) {
+        } else if (bitmap[i] == 0 || (car_placements & (BIT(i) | BIT(i+8))) != 0 || check == 0) {
             return false;
         }
         check |= bitmap[i];
