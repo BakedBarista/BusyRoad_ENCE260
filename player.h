@@ -12,9 +12,10 @@
 	with obstacles:
 
        @code
+       #include "system.h"
+       #include "player.h"
        #include "screen.h"
        #include "pacer.h"
-	   #include "player.h"
 
        void main (void)
        {
