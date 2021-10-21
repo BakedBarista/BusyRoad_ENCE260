@@ -11,11 +11,13 @@
     Here is a example to display obstacles on screen
 
        @code
+       #include "system.h
        #include "screen.h"
        #include "pacer.h"
 
        void main (void)
        {
+           system_init();
            pacer_init (300);
            screen_init(300);
            while (1)
