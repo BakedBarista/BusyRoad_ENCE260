@@ -20,7 +20,7 @@
 
 static player_t player;
 
-
+/** Reads navstich and moves player */
 static void navswitch_task (__unused__ void *data)
 {
 	navswitch_update();
@@ -42,13 +42,13 @@ static void navswitch_task (__unused__ void *data)
 	}
 }
 
-
+/** Updates and displays player*/
 static void player_task (__unused__ void *data)
 {
 	player_update(&player);
 }
 
-
+/** Updates and displays screen*/
 static void screen_task (__unused__ void *data)
 {
 	screen_update();
