@@ -1,7 +1,7 @@
 # File:   Makefile
-# Author: M. P. Hayes, UCECE
-# Date:   12 Sep 2010
-# Descr:  Makefile for game
+# Authors: Carl Chen and Jeremy Gatdula
+# Date:   22 Oct 2021
+# Descr:  Makefile for Busy Road game
 
 # Definitions.
 CC = avr-gcc
