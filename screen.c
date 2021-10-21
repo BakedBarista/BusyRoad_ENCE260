@@ -1,3 +1,9 @@
+/** @file    screen.c
+    @authors Carl Chen and Jeremy Gatdula
+    @date    22 October 2021
+    @brief   Screen graphics module.
+*/
+
 #include "tinygl.h"
 #include "screen.h"
 #include "obstacles.h"
@@ -7,7 +13,6 @@
 #include <stdbool.h>
 #include "../fonts/font3x5_1.h"
 #include "tinygl.h"
-
 
 static uint8_t bitmap[SCREEN_WIDTH];
 static screen_mode_t screen_mode;
@@ -30,7 +35,10 @@ static const pio_t cols[] =
     LEDMAT_COL4_PIO, LEDMAT_COL5_PIO
 };
 
-// Lits given column with given pattern
+
+/** Displays a given pattern on screen
+    @param row_pattern pattern of leds, 1 turns led on, 0 turns led off.
+    @param current_column coordinate of pattern on column  */
 void screen_show_column(uint8_t row_pattern, uint8_t current_column)
 {
     if (screen_mode == SCREEN_MODE_GAME){
@@ -49,7 +57,8 @@ void screen_show_column(uint8_t row_pattern, uint8_t current_column)
     }
 }
 
-// Displays the screen
+
+/** Update display, obstacles and text display.  */
 void screen_update(void)
 {
     if (screen_mode == SCREEN_MODE_GAME){
@@ -72,7 +81,11 @@ void screen_update(void)
     }
 }
 
-// Returns true/false if given pixel is lit
+
+/** Get pixel.
+    @param col column-coordinate on bitmap.
+    @param row row-coordinate on bitmap.
+    @return 1 if pixel is on; 0 if pixel is off.  */
 bool screen_pixel_get(uint8_t col, uint8_t row)
 {
     uint8_t bitmask;
@@ -85,7 +98,8 @@ bool screen_pixel_get(uint8_t col, uint8_t row)
     return (bitmap[col] & bitmask) != 0;
 }
 
-// Moves screen up
+
+/** Advance bitmap up and create new obstacle. */
 void screen_up(void)
 {
     if (screen_mode == SCREEN_MODE_GAME) {
@@ -99,8 +113,9 @@ void screen_up(void)
     }
 }
 
-//Display game over message with player score
-void screen_show_game_over()
+
+/** Display game over message with player score. */
+void screen_show_game_over(void)
 {
     if (screen_mode == SCREEN_MODE_GAME) {
         char str[6];
@@ -113,6 +128,8 @@ void screen_show_game_over()
     }
 }
 
+
+/** Resets the bitmap, score and timer. */
 static void screen_refresh(void)
 {
     for (int i = 0; i < 7; i++) {
@@ -136,6 +153,8 @@ static void screen_refresh(void)
     screen_timer = 0;
 }
 
+
+/** Advances the screen to the next mode. */
 void screen_navswitch_pressed(void)
 {
     if (screen_mode == SCREEN_MODE_TITLE) {
@@ -151,7 +170,8 @@ void screen_navswitch_pressed(void)
     }
 }
 
-// Initialises screen/display
+
+/** Initialises screen. */
 void screen_init(uint16_t rate)
 {
 	tinygl_init(rate);
