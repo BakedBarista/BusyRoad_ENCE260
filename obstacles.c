@@ -37,8 +37,13 @@ void create_obstacle(uint8_t* bitmap)
     if (empty_row == 0) {
         // Creates stationary points
         uint8_t obstacle;
+        uint8_t loops = 0;
         do {
             obstacle = (rand() % 0x7f);
+            loops += 1
+            if (loops > 5) {
+                obstacle = 0x00;
+            }
         } while (check_obstacle(bitmap, obstacle));
         bitmap[0] = obstacle;
 
