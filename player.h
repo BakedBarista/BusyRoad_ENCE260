@@ -22,7 +22,7 @@
            system_init();
            pacer_init (300);
            screen_init(300);
-		   player = player_init();
+           player = player_init();
            while (1)
            {
                pacer_wait ();
