@@ -40,7 +40,7 @@ void create_obstacle(uint8_t* bitmap)
         uint8_t loops = 0;
         do {
             obstacle = (rand() % 0x7f);
-            loops += 1
+            loops += 1;
             if (loops > 5) {
                 obstacle = 0x00;
             }
