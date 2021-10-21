@@ -108,7 +108,7 @@ void screen_up(void)
         }
         screen_score++;
         screen_timer = 0;
-        /* Creates a new obstacle on bitmap*/
+        /* Creates a new obstacle on bitmap */
         create_obstacle(bitmap);
     }
 }
