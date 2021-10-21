@@ -1,3 +1,8 @@
+/** @file    game.c
+    @authors Carl Chen and Jeremy Gatdula
+    @date    22 October 2021
+*/
+
 #include "system.h"
 #include "navswitch.h"
 #include "pacer.h"
@@ -14,6 +19,7 @@
 #define PLAYER_TASK_RATE 20
 
 static player_t player;
+
 
 static void navswitch_task (__unused__ void *data)
 {
@@ -36,15 +42,18 @@ static void navswitch_task (__unused__ void *data)
 	}
 }
 
+
 static void player_task (__unused__ void *data)
 {
 	player_update(&player);
 }
 
+
 static void screen_task (__unused__ void *data)
 {
 	screen_update();
 }
+
 
 int main (void)
 {
