@@ -108,7 +108,7 @@ void screen_up(void)
         }
         screen_score++;
         screen_timer = 0;
-        // Creates a new obstacle
+        /* Creates a new obstacle on bitmap*/
         create_obstacle(bitmap);
     }
 }
@@ -174,15 +174,16 @@ void screen_navswitch_pressed(void)
 /** Initialises screen. */
 void screen_init(uint16_t rate)
 {
+    /* Initalises text display */
 	tinygl_init(rate);
 	tinygl_font_set (&font3x5_1);
     tinygl_text_speed_set (30);
     tinygl_text_mode_set (TINYGL_TEXT_MODE_SCROLL);
     tinygl_text_dir_set(TINYGL_TEXT_DIR_ROTATE);
     tinygl_text ("BUSY ROAD");
+
     screen_refresh();
     obstacle_init(rate);
-
     screen_rate = rate;
     screen_mode = SCREEN_MODE_TITLE;
 }
