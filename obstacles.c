@@ -1,8 +1,15 @@
+/** @file    obstacles.c
+    @authors Carl Chen and Jeremy Gatdula
+    @date    22 October 2021
+    @brief   Obstacle generator module
+*/
+
 #include <stdlib.h>
 #include <stdbool.h>
 #include "system.h"
 #include "screen.h"
 #include "obstacles.h"
+
 
 static uint8_t screen_counter[6] = {0, 0, 2, 3, 2, 1};
 static uint8_t car_presets[] = {0x11, 0x54, 0x10, 0x14, 0x02, 0x08};
@@ -10,21 +17,27 @@ static uint8_t car_times[SCREEN_WIDTH] = {0};
 static uint16_t car_placements;
 static uint16_t screen_rate;
 
-// returns true/false if path is blocked
-static bool check_obstacle(uint8_t* bitmap, uint8_t check)
+
+/** Checks if the obstacle is valid.
+    @param bitmap pointer to get other obstacles.
+    @param obstacle to check if obstacle is valid.
+    @return 1 if obstacle is valid; if obstacle is not valid return 0.  */
+static bool check_obstacle(uint8_t* bitmap, uint8_t obstacle)
 {
     for (uint8_t i = 1; i < SCREEN_WIDTH; i++) {
-        if (check >= 0x7f) {
+        if (obstacle >= 0x7f) {
             return true;
-        } else if (bitmap[i] == 0 || (car_placements & (BIT(i) | BIT(i+8))) != 0 || check == 0) {
+        } else if (bitmap[i] == 0 || (car_placements & (BIT(i) | BIT(i+8))) != 0 || obstacle == 0) {
             return false;
         }
-        check |= bitmap[i];
+        obstacle |= bitmap[i];
     }
     return true;
 }
 
-// Generates new obstacles
+
+/** Generates new obstacles.
+    @param bitmap pointer to add new obstacles on.  */
 void create_obstacle(uint8_t* bitmap)
 {
     for (int i = 1; i < SCREEN_WIDTH; i++) {
@@ -64,7 +77,9 @@ void create_obstacle(uint8_t* bitmap)
     }
 }
 
-// Updates moving obstacles
+
+/** Update obstacles (Move cars).
+    @param bitmap pointer used to move cars.  */
 void obstacle_update(uint8_t* bitmap)
 {
     for (int i = 0; i < SCREEN_WIDTH; i++) {
@@ -90,13 +105,17 @@ void obstacle_update(uint8_t* bitmap)
         }
     }
 }
-// Removes all car placements
+
+
+/** Clears all car placements  */
 void obstacle_refresh(void)
 {
     car_placements = 0x0000;
 }
 
-// Refreshes placements and sets screen rate
+
+/** Initialise obstacles.
+    @param rate rate in Hz.  */
 void obstacle_init(uint16_t rate)
 {
     obstacle_refresh();
