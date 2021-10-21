@@ -18,6 +18,7 @@
 
        void main (void)
        {
+           system_init();
            pacer_init (300);
            screen_init(300);
 		   player = player_init();
